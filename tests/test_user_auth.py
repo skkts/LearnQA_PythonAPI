@@ -2,7 +2,9 @@ import pytest
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequest
+import allure
 
+@allure.epic("Authorization cases")
 class TestUserAuth(BaseCase):
     exclude_params = [
         ("no_cookie"),
@@ -20,6 +22,7 @@ class TestUserAuth(BaseCase):
         self.token = self.get_headers(response1, "x-csrf-token")
         self.user_id_from_auth_method = self.get_json_value(response1, "user_id")
 
+    @allure.description("This test successfully authorize user with email and password")
     def test_auth_user(self):
         response2 = MyRequest.get(
             "/user/auth",
@@ -34,6 +37,7 @@ class TestUserAuth(BaseCase):
             "User IDs doesn't match"
         )
 
+    @allure.description("This test check authorization status w/o sending auth cookie or token")
     @pytest.mark.parametrize("condition", exclude_params)
     def test_negative_auth_check(self, condition):
         if condition == "no_cookie":
